@@ -1,0 +1,28 @@
+{
+  "name": "rest_apipractice01",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/AdnanSameer1724/Rest_ApiPractice01#readme",
+  "bugs": {
+    "url": "https://github.com/AdnanSameer1724/Rest_ApiPractice01/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdnanSameer1724/Rest_ApiPractice01.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "devStart": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.9"
+  }
+}

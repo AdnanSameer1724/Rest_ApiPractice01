@@ -8,6 +8,29 @@ router.get('/', (req, res) => {
     res.json({ message: "Welcome to API"});
 });
 
+router.post('/forgetPassword', async (req, res) => {
+    try{
+        const { emailID, password, confirmPassword } = req.body;
+
+        const user = await Authentication.findOne({ emailID });
+        if(!user){
+            return res.status(401).json({ message:"User doesn't exist" })
+        }
+
+        if(password !== confirmPassword){
+            return res.status(401).json({ message: "Password doesn't match"})
+        }
+
+        user.password = password;
+        await user.save();
+        return res.status(200).json({ message: "Password updated successfully" });
+
+    }catch(error){
+        console.error("Error updating password:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
 router.post ('/login', async (req, res) => {
     try{
         const { emailID, password } = req.body;
@@ -17,8 +40,7 @@ router.post ('/login', async (req, res) => {
             return res.status(400).json({ message: 'Invalid Username' });
         }
         
-
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = bcrypt.compareSync(password, user.password);
         if(!isMatch){
             return res.status(400).json({ message: 'Invalid password' });
         }
@@ -38,17 +60,19 @@ router.post('/signup', async (req, res) => {
     try{
         const { emailID, password } = req.body;
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!emailRegex.test(emailID)){
+            return res.status(400).json({ message: "Invalid email format" });
+        }
+
         const existingUser = await Authentication.findOne({ emailID });
         if(existingUser){
             return res.status(400).json({ message: 'Account already exists'});
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
         const newUser = new Authentication({
             emailID,
-            password: hashedPassword,
+            password
         });
 
         await newUser.save();
